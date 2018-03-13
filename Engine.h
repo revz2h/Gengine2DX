@@ -5,25 +5,38 @@
 #include "Render.h"
 #include "Level.h"
 
+struct Config
+{
+	int GAME_BUILD[2]; //0 - Major, 1 - Minor, 2 - Build
+	int RES_X, RES_Y;
+
+	char GAME_VERSION[32];
+	char GAME_TITLE[256];
+};
+
 class Engine
 {	
-	HWND hwnd;
-	Render render;	
+	HWND* hwnd;
+	Render* render;
+	int vecIt;
+	Block *block;
 
 public:	
 	Level* currentLevel;
-	LARGE_INTEGER ticksPerSecond;
+	Config* config;
+
+	LARGE_INTEGER ticksPerSecond;	
 
 	Engine();
 	~Engine();
 
-	bool Init(HWND &_hwnd);
+	bool Init(HWND* _hwnd, Config* _config);
 	bool LoadLevel();
 
 	bool LoadMainScreen();
 
-	bool Recalc(double &_timePassed);
-	bool Redraw(double &_timePassed);
+	bool Recalc(double _timePassed);
+	bool Redraw(double _timePassed);
 
 };
 #endif

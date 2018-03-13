@@ -12,6 +12,10 @@ BaseObject::BaseObject()
 {
 	x = 0.0f;
 	y = 0.0f;
+
+	scrX = 0.0f;
+	scrY = 0.0f;
+
 	width = 0.0f;
 	height = 0.0f;
 
@@ -20,6 +24,26 @@ BaseObject::BaseObject()
 
 BaseObject::~BaseObject()
 {
+}
+
+StaticObject::StaticObject()
+{
+
+}
+
+StaticObject::~StaticObject() 
+{
+
+}
+
+Block::Block()
+{
+
+}
+
+Block::~Block()
+{
+
 }
 
 DynamicObject::DynamicObject()
@@ -111,11 +135,39 @@ Player::~Player()
 Level::Level()
 {
 	player = new Player();
+
 	devMode = false;
 	showFps = false;
 }
 
 Level::~Level()
 {
+	int vecIt;
+
+	delete player;
+	delete camera;
+
+	//Delete blocks
+	for (vecIt = 0; vecIt != blocks.size(); vecIt++)
+	{
+		delete blocks.at(vecIt);
+		blocks.at(vecIt) = NULL;
+	}	
 }
 
+void Level::AddBlock(double _x, double _y, double _width, double _height)
+{
+	block = new Block();
+
+	block->x = _x;
+	block->y = _y;
+	block->width = _width;
+	block->height = _height;
+
+	block->drawHitbox = true;
+	block->clip = true;
+	block->destructable = false;
+
+	//Add to list
+	blocks.push_back(block);
+}

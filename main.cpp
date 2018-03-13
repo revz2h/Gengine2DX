@@ -108,7 +108,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmd, int
 
 	ShowWindow(hwnd, nCmdShow);
 
-	if (!engine.Init(hwnd)) return -1;
+	if (!engine.Init(&hwnd, &config)) return -1;
 
 	if (!engine.LoadMainScreen()) return -1;
 

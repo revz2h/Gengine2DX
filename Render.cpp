@@ -1,4 +1,5 @@
 #include "Render.h"
+#include <vector>
 
 Render::Render()
 {
@@ -19,7 +20,7 @@ Render::~Render()
 	if (defTextFormat) defTextFormat->Release();
 }
 
-bool Render::Init(HWND _hwnd)
+bool Render::Init(HWND* _hwnd)
 {
 	//TODO: Better error handling
 	static const WCHAR defFontName[] = CONSOLE_TEXT_FONT;
@@ -30,12 +31,12 @@ bool Render::Init(HWND _hwnd)
 
 	RECT clientRes;
 
-	GetClientRect(_hwnd, &clientRes);
+	GetClientRect(*_hwnd, &clientRes);
 
 	if (factory->CreateHwndRenderTarget
 	(
 		D2D1::RenderTargetProperties(),
-		D2D1::HwndRenderTargetProperties(_hwnd, D2D1::SizeU(clientRes.right, clientRes.bottom)),
+		D2D1::HwndRenderTargetProperties(*_hwnd, D2D1::SizeU(clientRes.right, clientRes.bottom)),
 		&renderTarget
 	) != S_OK) return false;
 
@@ -49,24 +50,53 @@ bool Render::Init(HWND _hwnd)
 	return true;
 };
 
-bool Render::Redraw(Level &_level, double &_timePassed)
+bool Render::Redraw(Level &_level, double _timePassed)
 {
+
 	renderTarget->BeginDraw();
 
 	renderTarget->Clear(&clearScreenColor);
 
+	//Player
 	if (_level.player->drawHitbox)
 	{		
-		renderTarget->DrawRectangle(D2D1::RectF(_level.player->x, _level.player->y, _level.player->x + _level.player->width, _level.player->y + _level.player->height), defBrush);
-	}	
-	
+		renderTarget->DrawRectangle(
+			D2D1::RectF(
+				_level.player->scrX, 
+				_level.player->scrY, 
+				_level.player->scrX + _level.player->width,
+				_level.player->scrY + _level.player->height),
+			defBrush
+		);
+	}
+
+	//Blocks
+	for(vecIt = 0; vecIt != _level.blocks.size(); vecIt++)
+	{
+		block = _level.blocks.at(vecIt);
+
+		if (block->drawHitbox)
+		{
+			renderTarget->DrawRectangle(
+				D2D1::RectF(
+					block->scrX,
+					block->scrY,
+					block->scrX + block->width,
+					block->scrY + block->height
+				),
+				defBrush
+			);
+		}
+	}
+
+	//FPS
 	if (_level.showFps)
 	{
 		fpsWchar = std::to_wstring(60 / _timePassed); // fps = std::to_wstring(60 / _timePassed).c_str(); doesn't work
 		fps = fpsWchar.c_str();
 
 		renderTarget->DrawTextA(fps, 5, defTextFormat, fpsRect, defBrush);		
-	}		
+	}
 
 	renderTarget->EndDraw();
 

@@ -20,14 +20,15 @@ class Render
 	D2D1_RECT_F fpsRect;
 	const WCHAR* fps;
 	std::wstring fpsWchar;
+	int vecIt;
+	Block* block;
 	
 public:
-
 	Render();
 	~Render();
 
-	bool Init(HWND _hwnd);
+	bool Init(HWND* _hwnd);
 
-	bool Redraw(Level &_level, double &_timePassed);
+	bool Redraw(Level &_level, double _timePassed);
 };
 #endif
