@@ -57,8 +57,9 @@ class Camera : public BaseObject
 {
 public:
 	bool followPlayer;
+	double offsetX, offsetY;
 
-	Camera();
+	Camera(double _x, double _y, double _width, double _height);
 	~Camera();
 };
 

@@ -1,7 +1,15 @@
 #include "Level.h"
 
-Camera::Camera()
+Camera::Camera(double _x, double _y, double _width, double _height)
 {
+	x = _x;
+	y = _y;
+
+	width = _width;
+	height = _height;
+
+	offsetX = width / 2;
+	offsetY = height / 2;
 }
 
 Camera::~Camera()

@@ -36,13 +36,13 @@ bool Engine::Recalc(double _timePassed)
 		currentLevel->camera->x = currentLevel->player->x;
 		currentLevel->camera->y = currentLevel->player->y;
 
-		currentLevel->player->scrX = currentLevel->player->x + (currentLevel->camera->x - currentLevel->camera->width / 2);
-		currentLevel->player->scrY = currentLevel->player->y + (currentLevel->camera->y - currentLevel->camera->height / 2);
+		currentLevel->player->scrX = currentLevel->camera->offsetX;
+		currentLevel->player->scrY = currentLevel->camera->offsetY;
 	}
 	else
 	{
-		currentLevel->player->scrX = currentLevel->player->x + (currentLevel->camera->x - currentLevel->camera->width / 2);
-		currentLevel->player->scrY = currentLevel->player->y + (currentLevel->camera->y - currentLevel->camera->height / 2);
+		currentLevel->player->scrX = currentLevel->player->x - currentLevel->camera->x + currentLevel->camera->offsetX;
+		currentLevel->player->scrY = currentLevel->player->y - currentLevel->camera->y + currentLevel->camera->offsetY;
 	}
 
 	//Blocks
@@ -50,8 +50,8 @@ bool Engine::Recalc(double _timePassed)
 	{
 		block = currentLevel->blocks.at(vecIt);
 
-		block->scrX = block->x + (currentLevel->camera->x - currentLevel->camera->width / 2);
-		block->scrY = block->y + (currentLevel->camera->y - currentLevel->camera->height / 2);
+		block->scrX = block->x - currentLevel->camera->x + currentLevel->camera->offsetX;
+		block->scrY = block->y - currentLevel->camera->y + currentLevel->camera->offsetY;
 	}
 
 	return true;
@@ -99,16 +99,9 @@ bool Engine::LoadMainScreen()
 	currentLevel->AddBlock(400, 20, 200, 50);
 
 	//Camera
-	currentLevel->camera = new Camera();
+	currentLevel->camera = new Camera(100, 200, config->RES_X, config->RES_Y);
 
 	currentLevel->camera->followPlayer = true;
-
-	currentLevel->camera->width = config->RES_X;
-	currentLevel->camera->height = config->RES_Y;
-
-	//currentLevel->camera->x = config->RES_X / 2;
-	//currentLevel->camera->y = config->RES_Y / 2;
-
 
 	return true;
 }
