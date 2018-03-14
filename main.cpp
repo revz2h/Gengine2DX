@@ -10,14 +10,14 @@ bool LoadConfig(Config &_config)
 {
 	_config.GAME_BUILD[0] = 0;
 	_config.GAME_BUILD[1] = 2;
-	_config.GAME_BUILD[2] = 0;
+	_config.GAME_BUILD[2] = 1;
 
 	snprintf(&_config.GAME_VERSION[0], sizeof(_config.GAME_VERSION), STRFMT_VERSION, _config.GAME_BUILD[0], _config.GAME_BUILD[1], _config.GAME_BUILD[2]);
 
 	snprintf(&_config.GAME_TITLE[0], sizeof(_config.GAME_TITLE), STRFMT_GAME_TITLE, _config.GAME_VERSION);
 
-	_config.RES_X = 1024;
-	_config.RES_Y = 768;
+	_config.RES_X = 1920;
+	_config.RES_Y = 1080;
 
 	return true;
 }
@@ -45,6 +45,9 @@ LRESULT CALLBACK WinProc(HWND _hwnd, UINT _uMsg, WPARAM _wParam, LPARAM _lParam)
 					break;
 				case 'D':
 					engine.currentLevel->player->accelVec[0] = *engine.currentLevel->player->maxAccel;
+					break;
+				case 0x1B:
+					PostMessage(_hwnd, WM_QUIT, 0, 0);
 					break;
 				default:
 					break;
@@ -89,7 +92,7 @@ bool ConstructWindow(HWND &_hwnd, HINSTANCE &_hInstance)
 
 	RegisterClassEx(&winClass);
 
-	_hwnd = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, "GengineDX", config.GAME_TITLE, WS_OVERLAPPED, 0, 0, config.RES_X, config.RES_Y, NULL, NULL, _hInstance, NULL);
+	_hwnd = CreateWindowEx(NULL, "GengineDX", config.GAME_TITLE, WS_POPUP, 0, 0, config.RES_X, config.RES_Y, NULL, NULL, _hInstance, NULL);
 
 	if (!_hwnd) return false;
 	else return true;

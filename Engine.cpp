@@ -11,6 +11,23 @@ Engine::~Engine()
 
 }
 
+bool Engine::InAxisRange(double _value, double _min, double _max)
+{
+	return (_value > _min) && (_value < _max);
+}
+
+bool Engine::DetectCollision(BaseObject* _firstObject, BaseObject* _secondObject)
+{
+	if (
+		InAxisRange(_firstObject->x, _secondObject->x, _secondObject->x2) && InAxisRange(_firstObject->y, _secondObject->y, _secondObject->y2) ||
+		InAxisRange(_firstObject->x, _secondObject->x, _secondObject->x2) && InAxisRange(_firstObject->y2, _secondObject->y, _secondObject->y2) ||
+		InAxisRange(_firstObject->x2, _secondObject->x, _secondObject->x2) && InAxisRange(_firstObject->y, _secondObject->y, _secondObject->y2) ||
+		InAxisRange(_firstObject->x2, _secondObject->x, _secondObject->x2) && InAxisRange(_firstObject->y2, _secondObject->y, _secondObject->y2)		
+	) return true;
+
+	else return false;
+}
+
 bool Engine::Init(HWND* _hwnd, Config* _config)
 {
 	hwnd = _hwnd;	
@@ -49,6 +66,18 @@ bool Engine::Recalc(double _timePassed)
 	for (vecIt = 0; vecIt != currentLevel->blocks.size(); vecIt++)
 	{
 		block = currentLevel->blocks.at(vecIt);
+
+		//Detect player collision		
+		if (DetectCollision(currentLevel->player, block))
+		{
+			currentLevel->player->colliding = true;
+			block->colliding = true;
+		}
+		else
+		{
+			currentLevel->player->colliding = false;
+			block->colliding = false;
+		};		
 
 		block->scrX = block->x - currentLevel->camera->x + currentLevel->camera->offsetX;
 		block->scrY = block->y - currentLevel->camera->y + currentLevel->camera->offsetY;
@@ -95,8 +124,8 @@ bool Engine::LoadMainScreen()
 	currentLevel->player->drawHitbox = true;
 
 	//Blocks
-	currentLevel->AddBlock(20, 200, 50, 200);
-	currentLevel->AddBlock(400, 20, 200, 50);
+	currentLevel->AddBlock(20, 200, 50, 200, true, true, false);
+	currentLevel->AddBlock(400, 20, 200, 100, true, true, false);
 
 	//Camera
 	currentLevel->camera = new Camera(100, 200, config->RES_X, config->RES_Y);

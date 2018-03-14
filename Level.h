@@ -7,8 +7,8 @@ class BaseObject
 {
 
 public:
-	double x, y, width, height, scrX, scrY;
-	bool drawHitbox;
+	double x, x2, y, y2, z, width, height, scrX, scrY;
+	bool drawHitbox, collidable, colliding;
 
 	BaseObject();
 	~BaseObject();
@@ -19,7 +19,7 @@ class StaticObject : public BaseObject
 
 public:
 	double health, armor;
-	bool clip, destructable;
+	bool destructable;
 
 	StaticObject();
 	~StaticObject();
@@ -76,6 +76,6 @@ public:
 	Level();
 	~Level();
 
-	void AddBlock(double _x, double _y, double _width, double _height);
+	void AddBlock(double _x, double _y, double _width, double _height, bool _drawHitbox, bool _collidable, bool _destructable);
 };
 #endif

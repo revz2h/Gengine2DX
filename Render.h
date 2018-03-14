@@ -14,14 +14,17 @@ class Render
 	ID2D1Factory* factory;
 	ID2D1HwndRenderTarget* renderTarget;
 	IDWriteFactory* writeFactory;
-	ID2D1SolidColorBrush* defBrush;
+	ID2D1SolidColorBrush* currentBrush;
+	ID2D1SolidColorBrush* defBrushGreen;
+	ID2D1SolidColorBrush* defBrushRed;
 	IDWriteTextFormat* defTextFormat;
+	const WCHAR* fps;
+	Block* block;
+
 	D2D1_COLOR_F clearScreenColor;
 	D2D1_RECT_F fpsRect;
-	const WCHAR* fps;
 	std::wstring fpsWchar;
-	int vecIt;
-	Block* block;
+	int vecIt;	
 	
 public:
 	Render();

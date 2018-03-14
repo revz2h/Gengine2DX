@@ -6,8 +6,14 @@ Render::Render()
 	factory = NULL;
 	renderTarget = NULL;
 	writeFactory = NULL;
-	defBrush = NULL;
+
+	defBrushGreen = NULL;
+	defBrushRed = NULL;
+	currentBrush = NULL;
+
 	defTextFormat = NULL;
+
+	block = NULL;
 	fps = NULL;
 }
 
@@ -16,8 +22,15 @@ Render::~Render()
 	if (factory) factory->Release();
 	if (renderTarget) renderTarget->Release();
 	if (writeFactory) writeFactory->Release();
-	if (defBrush) defBrush->Release();
+
+	if (defBrushGreen) defBrushGreen->Release();
+	if (defBrushRed) defBrushRed->Release();
+	if (currentBrush) currentBrush->Release();
+
 	if (defTextFormat) defTextFormat->Release();
+
+	block = NULL;
+	fps = NULL;
 }
 
 bool Render::Init(HWND* _hwnd)
@@ -40,7 +53,9 @@ bool Render::Init(HWND* _hwnd)
 		&renderTarget
 	) != S_OK) return false;
 
-	if (renderTarget->CreateSolidColorBrush(D2D1::ColorF(0.0f, 100.0f, 0.0f, 100.0f), &defBrush) != S_OK) return false;
+	//Create default brushes
+	if (renderTarget->CreateSolidColorBrush(D2D1::ColorF(0.0f, 100.0f, 0.0f, 100.0f), &defBrushGreen) != S_OK) return false;
+	if (renderTarget->CreateSolidColorBrush(D2D1::ColorF(100.0f, 0.0f, 0.0f, 100.0f), &defBrushRed) != S_OK) return false;
 
 	if (writeFactory->CreateTextFormat(defFontName, NULL, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, CONSOLE_TEXT_SIZE, L"", &defTextFormat) != S_OK) return false;
 
@@ -60,13 +75,17 @@ bool Render::Redraw(Level &_level, double _timePassed)
 	//Player
 	if (_level.player->drawHitbox)
 	{		
+		
+		if (_level.player->colliding) currentBrush = defBrushRed;
+		else currentBrush = defBrushGreen;
+		
 		renderTarget->DrawRectangle(
 			D2D1::RectF(
 				_level.player->scrX, 
 				_level.player->scrY, 
 				_level.player->scrX + _level.player->width,
 				_level.player->scrY + _level.player->height),
-			defBrush
+			currentBrush
 		);
 	}
 
@@ -74,6 +93,9 @@ bool Render::Redraw(Level &_level, double _timePassed)
 	for(vecIt = 0; vecIt != _level.blocks.size(); vecIt++)
 	{
 		block = _level.blocks.at(vecIt);
+
+		if (block->colliding) currentBrush = defBrushRed;
+		else currentBrush = defBrushGreen;
 
 		if (block->drawHitbox)
 		{
@@ -84,7 +106,7 @@ bool Render::Redraw(Level &_level, double _timePassed)
 					block->scrX + block->width,
 					block->scrY + block->height
 				),
-				defBrush
+				currentBrush
 			);
 		}
 	}
@@ -95,7 +117,7 @@ bool Render::Redraw(Level &_level, double _timePassed)
 		fpsWchar = std::to_wstring(60 / _timePassed); // fps = std::to_wstring(60 / _timePassed).c_str(); doesn't work
 		fps = fpsWchar.c_str();
 
-		renderTarget->DrawTextA(fps, 5, defTextFormat, fpsRect, defBrush);		
+		renderTarget->DrawTextA(fps, 5, defTextFormat, fpsRect, defBrushGreen);		
 	}
 
 	renderTarget->EndDraw();

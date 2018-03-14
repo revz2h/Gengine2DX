@@ -18,8 +18,8 @@ class Engine
 {	
 	HWND* hwnd;
 	Render* render;
-	int vecIt;
 	Block *block;
+	int vecIt;
 
 public:	
 	Level* currentLevel;
@@ -38,5 +38,7 @@ public:
 	bool Recalc(double _timePassed);
 	bool Redraw(double _timePassed);
 
+	bool InAxisRange(double _value, double _min, double _max);
+	bool DetectCollision(BaseObject* _object1, BaseObject* _object2);
 };
 #endif

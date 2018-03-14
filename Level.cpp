@@ -10,6 +10,8 @@ Camera::Camera(double _x, double _y, double _width, double _height)
 
 	offsetX = width / 2;
 	offsetY = height / 2;
+
+	followPlayer = true;
 }
 
 Camera::~Camera()
@@ -20,6 +22,10 @@ BaseObject::BaseObject()
 {
 	x = 0.0f;
 	y = 0.0f;
+	z = 1.0f;
+
+	x2 = 0.0f;
+	y2 = 0.0f;
 
 	scrX = 0.0f;
 	scrY = 0.0f;
@@ -28,6 +34,8 @@ BaseObject::BaseObject()
 	height = 0.0f;
 
 	drawHitbox = false;
+	collidable = false;
+	colliding = false;
 }
 
 BaseObject::~BaseObject()
@@ -36,7 +44,9 @@ BaseObject::~BaseObject()
 
 StaticObject::StaticObject()
 {
-
+	health = 1;
+	armor = 1;
+	destructable = false;
 }
 
 StaticObject::~StaticObject() 
@@ -62,11 +72,20 @@ DynamicObject::DynamicObject()
 	accelVec[0] = 0.0f;
 	accelVec[1] = 0.0f;
 
+	maxSpeed[0] = 0.0f;
+	maxSpeed[1] = 0.0f;
+
+	maxAccel[0] = 0.0f;
+	maxAccel[1] = 0.0f;
+
+	maxDeccel[0] = 0.0f;
+	maxDeccel[1] = 0.0f;
+
+	mass = 0.0f;
+
 	moving = false;
 	accelarating = false;
-	stoping = false;
-
-	
+	stoping = false;	
 }
 
 DynamicObject::~DynamicObject()
@@ -76,59 +95,67 @@ DynamicObject::~DynamicObject()
 void DynamicObject::MoveObject(double &_timePassed)
 {
 	// X - axis
-	if (this->accelVec[0]) //If accelarating
+	if (accelVec[0]) //If accelarating
 	{
-		if (this->speedVec[0] < this->maxSpeed[0] && this->speedVec[0] * -1 < this->maxSpeed[0])
-			this->speedVec[0] += this->accelVec[0] * _timePassed;
+		if (speedVec[0] < maxSpeed[0] && speedVec[0] * -1 < maxSpeed[0])
+			speedVec[0] += accelVec[0] * _timePassed;
 
-		this->x += this->speedVec[0] * _timePassed;
+		x += speedVec[0] * _timePassed;
+
+		x2 = x + width;
 	}
-	else if (this->speedVec[0]) //If decelarating
+	else if (speedVec[0]) //If decelarating
 	{
-		if (this->speedVec[0] > 0)
+		if (speedVec[0] > 0)
 		{
-			this->speedVec[0] -= this->maxDeccel[0] * _timePassed;
+			speedVec[0] -= maxDeccel[0] * _timePassed;
 
-			if (this->speedVec[0] < 0) this->speedVec[0] = 0;
+			if (speedVec[0] < 0) speedVec[0] = 0;
 
-			this->x += this->speedVec[0] * _timePassed;
+			x += speedVec[0] * _timePassed;
 		}
 		else
 		{
-			this->speedVec[0] += this->maxDeccel[0] * _timePassed;
+			speedVec[0] += maxDeccel[0] * _timePassed;
 
-			if (this->speedVec[0] > 0) this->speedVec[0] = 0;
+			if (speedVec[0] > 0) speedVec[0] = 0;
 
-			this->x += this->speedVec[0] * _timePassed;
+			x += speedVec[0] * _timePassed;			
 		}
+
+		x2 = x + width;
 	}
 
 	// Y - axis
-	if (this->accelVec[1]) //If accelarating
+	if (accelVec[1]) //If accelarating
 	{
-		if (this->speedVec[1] < this->maxSpeed[1] && this->speedVec[1] * -1 < this->maxSpeed[1])
-			this->speedVec[1] += this->accelVec[1] * _timePassed;
+		if (speedVec[1] < maxSpeed[1] && speedVec[1] * -1 < maxSpeed[1])
+			speedVec[1] += accelVec[1] * _timePassed;
 
-		this->y -= this->speedVec[1] * _timePassed;
+		y -= speedVec[1] * _timePassed;
+
+		y2 = y + height;
 	}
-	else if (this->speedVec[1]) //If decelarating
+	else if (speedVec[1]) //If decelarating
 	{
-		if (this->speedVec[1] > 0)
+		if (speedVec[1] > 0)
 		{
-			this->speedVec[1] -= this->maxDeccel[1] * _timePassed;
+			speedVec[1] -= maxDeccel[1] * _timePassed;
 
-			if(this->speedVec[1] < 0) this->speedVec[1] = 0;
+			if(speedVec[1] < 0) speedVec[1] = 0;
 
-			this->y -= this->speedVec[1] * _timePassed;
+			y -= speedVec[1] * _timePassed;			
 		}
 		else
 		{
-			this->speedVec[1] += this->maxDeccel[1] * _timePassed;
+			speedVec[1] += maxDeccel[1] * _timePassed;
 
-			if (this->speedVec[1] > 0) this->speedVec[1] = 0;
+			if (speedVec[1] > 0) speedVec[1] = 0;
 
-			this->y -= this->speedVec[1] * _timePassed;
+			y -= speedVec[1] * _timePassed;
 		}
+
+		y2 = y + height;
 	}
 };
 
@@ -144,6 +171,9 @@ Level::Level()
 {
 	player = new Player();
 
+	block = NULL;
+	camera = NULL;
+
 	devMode = false;
 	showFps = false;
 }
@@ -152,6 +182,7 @@ Level::~Level()
 {
 	int vecIt;
 
+	delete block;
 	delete player;
 	delete camera;
 
@@ -163,7 +194,7 @@ Level::~Level()
 	}	
 }
 
-void Level::AddBlock(double _x, double _y, double _width, double _height)
+void Level::AddBlock(double _x, double _y, double _width, double _height, bool _drawHitbox, bool _collidable, bool _destructable)
 {
 	block = new Block();
 
@@ -172,9 +203,12 @@ void Level::AddBlock(double _x, double _y, double _width, double _height)
 	block->width = _width;
 	block->height = _height;
 
-	block->drawHitbox = true;
-	block->clip = true;
-	block->destructable = false;
+	block->x2 = _x + _width;
+	block->y2 = _y + _height;
+
+	block->drawHitbox = _drawHitbox;
+	block->collidable = _collidable;
+	block->destructable = _destructable;
 
 	//Add to list
 	blocks.push_back(block);
