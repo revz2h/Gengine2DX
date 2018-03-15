@@ -10,7 +10,7 @@ bool LoadConfig(Config &_config)
 {
 	_config.GAME_BUILD[0] = 0;
 	_config.GAME_BUILD[1] = 2;
-	_config.GAME_BUILD[2] = 1;
+	_config.GAME_BUILD[2] = 2;
 
 	snprintf(&_config.GAME_VERSION[0], sizeof(_config.GAME_VERSION), STRFMT_VERSION, _config.GAME_BUILD[0], _config.GAME_BUILD[1], _config.GAME_BUILD[2]);
 
@@ -18,6 +18,8 @@ bool LoadConfig(Config &_config)
 
 	_config.RES_X = 1920;
 	_config.RES_Y = 1080;
+
+	_config.HITBOX_WIDTH = 5;
 
 	return true;
 }
@@ -35,10 +37,10 @@ LRESULT CALLBACK WinProc(HWND _hwnd, UINT _uMsg, WPARAM _wParam, LPARAM _lParam)
 			{
 				//TODO: Mapable controls
 				case 'W':
-					engine.currentLevel->player->accelVec[1] = *engine.currentLevel->player->maxAccel;
+					engine.currentLevel->player->accelVec[1] = *engine.currentLevel->player->maxAccel * -1;
 					break;
 				case 'S': 
-					engine.currentLevel->player->accelVec[1] = *engine.currentLevel->player->maxAccel * -1;
+					engine.currentLevel->player->accelVec[1] = *engine.currentLevel->player->maxAccel;
 					break;
 				case 'A':
 					engine.currentLevel->player->accelVec[0] = *engine.currentLevel->player->maxAccel * -1;

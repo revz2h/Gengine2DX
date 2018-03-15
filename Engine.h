@@ -8,7 +8,7 @@
 struct Config
 {
 	int GAME_BUILD[2]; //0 - Major, 1 - Minor, 2 - Build
-	int RES_X, RES_Y;
+	int RES_X, RES_Y, HITBOX_WIDTH;
 
 	char GAME_VERSION[32];
 	char GAME_TITLE[256];
@@ -39,6 +39,11 @@ public:
 	bool Redraw(double _timePassed);
 
 	bool InAxisRange(double _value, double _min, double _max);
-	bool DetectCollision(BaseObject* _object1, BaseObject* _object2);
+
+	bool RectCollision(DynamicObject* _firstObject, BaseObject* _secondObject);
+
+	bool DetectCollision(DynamicObject* _object);
+
+	void MoveObject(double &_timePassed, DynamicObject* _dynamicObject);
 };
 #endif

@@ -24,7 +24,8 @@ class Render
 	D2D1_COLOR_F clearScreenColor;
 	D2D1_RECT_F fpsRect;
 	std::wstring fpsWchar;
-	int vecIt;	
+	int vecIt;
+	float timeElapsed;
 	
 public:
 	Render();

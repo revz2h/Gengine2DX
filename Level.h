@@ -8,7 +8,7 @@ class BaseObject
 
 public:
 	double x, x2, y, y2, z, width, height, scrX, scrY;
-	bool drawHitbox, collidable, colliding;
+	bool drawHitbox, collidable, colliding, collidingTop, collidingBottom, collidingLeft, collidingRight;
 
 	BaseObject();
 	~BaseObject();
@@ -18,16 +18,17 @@ class StaticObject : public BaseObject
 {
 
 public:
-	double health, armor;
-	bool destructable;
-
 	StaticObject();
 	~StaticObject();
 };
 
 class Block : public StaticObject
 {
+
 public:
+	double health, armor;
+	bool destructable;
+
 	Block();
 	~Block();
 };
@@ -38,8 +39,6 @@ class DynamicObject : public BaseObject
 public:
 	double speedVec[2], accelVec[2], maxSpeed[2], maxAccel[2], maxDeccel[2], mass;
 	bool moving, accelarating, stoping;
-
-	void MoveObject(double &_timePassed);
 
 	DynamicObject();
 	~DynamicObject();

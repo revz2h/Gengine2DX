@@ -36,6 +36,12 @@ BaseObject::BaseObject()
 	drawHitbox = false;
 	collidable = false;
 	colliding = false;
+
+	collidingTop = false;
+	collidingBottom = false;
+	collidingLeft = false;
+	collidingRight = false;
+
 }
 
 BaseObject::~BaseObject()
@@ -44,9 +50,6 @@ BaseObject::~BaseObject()
 
 StaticObject::StaticObject()
 {
-	health = 1;
-	armor = 1;
-	destructable = false;
 }
 
 StaticObject::~StaticObject() 
@@ -56,7 +59,9 @@ StaticObject::~StaticObject()
 
 Block::Block()
 {
-
+	health = 1;
+	armor = 1;
+	destructable = false;
 }
 
 Block::~Block()
@@ -91,73 +96,6 @@ DynamicObject::DynamicObject()
 DynamicObject::~DynamicObject()
 {
 }
-
-void DynamicObject::MoveObject(double &_timePassed)
-{
-	// X - axis
-	if (accelVec[0]) //If accelarating
-	{
-		if (speedVec[0] < maxSpeed[0] && speedVec[0] * -1 < maxSpeed[0])
-			speedVec[0] += accelVec[0] * _timePassed;
-
-		x += speedVec[0] * _timePassed;
-
-		x2 = x + width;
-	}
-	else if (speedVec[0]) //If decelarating
-	{
-		if (speedVec[0] > 0)
-		{
-			speedVec[0] -= maxDeccel[0] * _timePassed;
-
-			if (speedVec[0] < 0) speedVec[0] = 0;
-
-			x += speedVec[0] * _timePassed;
-		}
-		else
-		{
-			speedVec[0] += maxDeccel[0] * _timePassed;
-
-			if (speedVec[0] > 0) speedVec[0] = 0;
-
-			x += speedVec[0] * _timePassed;			
-		}
-
-		x2 = x + width;
-	}
-
-	// Y - axis
-	if (accelVec[1]) //If accelarating
-	{
-		if (speedVec[1] < maxSpeed[1] && speedVec[1] * -1 < maxSpeed[1])
-			speedVec[1] += accelVec[1] * _timePassed;
-
-		y -= speedVec[1] * _timePassed;
-
-		y2 = y + height;
-	}
-	else if (speedVec[1]) //If decelarating
-	{
-		if (speedVec[1] > 0)
-		{
-			speedVec[1] -= maxDeccel[1] * _timePassed;
-
-			if(speedVec[1] < 0) speedVec[1] = 0;
-
-			y -= speedVec[1] * _timePassed;			
-		}
-		else
-		{
-			speedVec[1] += maxDeccel[1] * _timePassed;
-
-			if (speedVec[1] > 0) speedVec[1] = 0;
-
-			y -= speedVec[1] * _timePassed;
-		}
-
-		y2 = y + height;
-	}
-};
 
 Player::Player()
 {

@@ -15,6 +15,8 @@ Render::Render()
 
 	block = NULL;
 	fps = NULL;
+
+	timeElapsed = 0;
 }
 
 Render::~Render()
@@ -67,7 +69,6 @@ bool Render::Init(HWND* _hwnd)
 
 bool Render::Redraw(Level &_level, double _timePassed)
 {
-
 	renderTarget->BeginDraw();
 
 	renderTarget->Clear(&clearScreenColor);
@@ -114,8 +115,15 @@ bool Render::Redraw(Level &_level, double _timePassed)
 	//FPS
 	if (_level.showFps)
 	{
-		fpsWchar = std::to_wstring(60 / _timePassed); // fps = std::to_wstring(60 / _timePassed).c_str(); doesn't work
-		fps = fpsWchar.c_str();
+		timeElapsed += _timePassed;
+
+		if (timeElapsed > 1)
+		{
+			fpsWchar = std::to_wstring(60 / _timePassed); // fps = std::to_wstring(60 / _timePassed).c_str(); doesn't work
+			fps = fpsWchar.c_str();
+
+			timeElapsed = 0;
+		}
 
 		renderTarget->DrawTextA(fps, 5, defTextFormat, fpsRect, defBrushGreen);		
 	}
