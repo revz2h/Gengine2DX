@@ -4,11 +4,12 @@ Engine::Engine()
 {	
 	hwnd = NULL;
 	currentLevel = new Level();
+
+	devMode = false;
 }
 
 Engine::~Engine()
 {
-
 }
 
 bool Engine::InAxisRange(double _value, double _min, double _max)
@@ -84,12 +85,14 @@ bool Engine::RectCollision(DynamicObject* _firstObject, BaseObject* _secondObjec
 
 bool Engine::DetectCollision(DynamicObject* _object)
 {
+	if (!_object->collidable) return false;
+
 	//Detect collision into blocks
 	for (vecIt = 0; vecIt != currentLevel->blocks.size(); vecIt++)
 	{
 		block = currentLevel->blocks.at(vecIt);
 
-		if (_object->collidable && block->collidable)
+		if (block->collidable)
 		{
 			if (RectCollision(_object, block))
 			{
@@ -111,7 +114,7 @@ bool Engine::DetectCollision(DynamicObject* _object)
 
 void Engine::MoveObject(double _timePassed, DynamicObject* _dynamicObject)
 {
-	double __x, __y;
+	int xTmp, yTmp;
 
 	// X - axis
 	if (_dynamicObject->accelVec[0]) //Accelarating
@@ -125,21 +128,18 @@ void Engine::MoveObject(double _timePassed, DynamicObject* _dynamicObject)
 			else _dynamicObject->speedVec[0] = _dynamicObject->maxSpeed[0] * -1;
 		}			
 
-		__x = _dynamicObject->x;		
+		xTmp = _dynamicObject->x;
 
 		_dynamicObject->x += _dynamicObject->speedVec[0] * _timePassed;	
 		_dynamicObject->x2 = _dynamicObject->x + _dynamicObject->width;
 
 		if (DetectCollision(_dynamicObject))
 		{
-			if (_dynamicObject->collidable)
-			{
-				_dynamicObject->x = __x;
-				_dynamicObject->x2 = _dynamicObject->x + _dynamicObject->width;
+			_dynamicObject->x = xTmp;
+			_dynamicObject->x2 = _dynamicObject->x + _dynamicObject->width;
 
-				_dynamicObject->speedVec[0] *= 0.5;
-				_dynamicObject->accelVec[0] *= 0.5;
-			}
+			_dynamicObject->speedVec[0] *= 0.5;
+			_dynamicObject->accelVec[0] *= 0.5;
 		}
 
 		
@@ -161,21 +161,18 @@ void Engine::MoveObject(double _timePassed, DynamicObject* _dynamicObject)
 			else _dynamicObject->speedVec[1] = _dynamicObject->maxSpeed[1] * - 1;
 		}
 
-		__y = _dynamicObject->y;
+		yTmp = _dynamicObject->y;
 
 		_dynamicObject->y += _dynamicObject->speedVec[1] * _timePassed;
 		_dynamicObject->y2 = _dynamicObject->y + _dynamicObject->height;
 
 		if (DetectCollision(_dynamicObject))
 		{			
-			if (_dynamicObject->collidable)
-			{
-				_dynamicObject->y = __y;
-				_dynamicObject->y2 = _dynamicObject->y + _dynamicObject->height;
+			_dynamicObject->y = yTmp;
+			_dynamicObject->y2 = _dynamicObject->y + _dynamicObject->height;
 
-				_dynamicObject->speedVec[1] *= 0.5;
-				_dynamicObject->accelVec[1] *= 0.5;
-			}
+			_dynamicObject->speedVec[1] *= 0.5;
+			_dynamicObject->accelVec[1] *= 0.5;
 		}		
 	}
 	else if (_dynamicObject->speedVec[1]) //Decelarating
@@ -247,17 +244,14 @@ bool Engine::LoadLevel()
 bool Engine::LoadMainScreen()
 {
 	//Player
-	currentLevel->showFps = true;
-	currentLevel->devMode = true;
+	currentLevel->player->maxAccel[0] = 50.0f;	
+	currentLevel->player->maxAccel[1] = 50.0f;
 
-	currentLevel->player->maxAccel[0] = 400.0f;	
-	currentLevel->player->maxAccel[1] = 400.0f;
+	currentLevel->player->maxDeccel[0] = 100.0f;
+	currentLevel->player->maxDeccel[1] = 100.0f;
 
-	currentLevel->player->maxDeccel[0] = 400.0f;
-	currentLevel->player->maxDeccel[1] = 400.0f;
-
-	currentLevel->player->maxSpeed[0] = 300.0f;
-	currentLevel->player->maxSpeed[1] = 300.0f;
+	currentLevel->player->maxSpeed[0] = 80.0f;
+	currentLevel->player->maxSpeed[1] = 80.0f;
 
 	currentLevel->player->width = 50.0f;
 	currentLevel->player->height = 50.0f;
@@ -276,6 +270,11 @@ bool Engine::LoadMainScreen()
 	currentLevel->camera = new Camera(100, 200, config->RES_X, config->RES_Y);
 
 	currentLevel->camera->followPlayer = true;
+
+	this->render->showFps = true;
+	this->render->drawCollisions = false;
+
+	this->devMode = false;
 
 	return true;
 }

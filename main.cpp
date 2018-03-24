@@ -97,7 +97,8 @@ bool ConstructWindow(HWND &_hwnd, HINSTANCE &_hInstance)
 	_hwnd = CreateWindowEx(NULL, "GengineDX", config.GAME_TITLE, WS_POPUP, 0, 0, config.RES_X, config.RES_Y, NULL, NULL, _hInstance, NULL);
 
 	if (!_hwnd) return false;
-	else return true;
+
+	return true;
 }
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmd, int nCmdShow)

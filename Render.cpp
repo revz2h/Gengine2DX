@@ -16,6 +16,9 @@ Render::Render()
 	block = NULL;
 	fps = NULL;
 
+	showFps = false;
+	drawCollisions = false;
+
 	timeElapsed = 0;
 }
 
@@ -76,8 +79,7 @@ bool Render::Redraw(Level &_level, double _timePassed)
 	//Player
 	if (_level.player->drawHitbox)
 	{		
-		
-		if (_level.player->colliding) currentBrush = defBrushRed;
+		if (_level.player->colliding && drawCollisions) currentBrush = defBrushRed;
 		else currentBrush = defBrushGreen;
 		
 		renderTarget->DrawRectangle(
@@ -95,7 +97,7 @@ bool Render::Redraw(Level &_level, double _timePassed)
 	{
 		block = _level.blocks.at(vecIt);
 
-		if (block->colliding) currentBrush = defBrushRed;
+		if (block->colliding && drawCollisions) currentBrush = defBrushRed;
 		else currentBrush = defBrushGreen;
 
 		if (block->drawHitbox)
@@ -113,7 +115,7 @@ bool Render::Redraw(Level &_level, double _timePassed)
 	}
 
 	//FPS
-	if (_level.showFps)
+	if (this->showFps)
 	{
 		timeElapsed += _timePassed;
 

@@ -34,6 +34,7 @@ BaseObject::BaseObject()
 	height = 0.0f;
 
 	drawHitbox = false;
+
 	collidable = false;
 	colliding = false;
 
@@ -41,7 +42,6 @@ BaseObject::BaseObject()
 	collidingBottom = false;
 	collidingLeft = false;
 	collidingRight = false;
-
 }
 
 BaseObject::~BaseObject()
@@ -111,9 +111,6 @@ Level::Level()
 
 	block = NULL;
 	camera = NULL;
-
-	devMode = false;
-	showFps = false;
 }
 
 Level::~Level()

@@ -28,6 +28,8 @@ class Render
 	float timeElapsed;
 	
 public:
+	bool showFps, drawCollisions;
+
 	Render();
 	~Render();
 

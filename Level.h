@@ -69,7 +69,6 @@ public:
 	Camera*	camera;
 
 	std::vector<Block*> blocks;
-	bool devMode, showFps;
 	Block* block;
 
 	Level();

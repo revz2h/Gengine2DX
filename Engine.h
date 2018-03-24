@@ -24,8 +24,9 @@ class Engine
 public:	
 	Level* currentLevel;
 	Config* config;
+	bool devMode;
 
-	LARGE_INTEGER ticksPerSecond;	
+	LARGE_INTEGER ticksPerSecond;
 
 	Engine();
 	~Engine();
