@@ -19,7 +19,7 @@ bool LoadConfig(Config &_config)
 	_config.RES_X = 1920;
 	_config.RES_Y = 1080;
 
-	_config.HITBOX_WIDTH = 5;
+	_config.HITBOX_WIDTH = 3;
 
 	return true;
 }

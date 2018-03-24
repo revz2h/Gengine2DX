@@ -18,7 +18,15 @@ bool Engine::InAxisRange(double _value, double _min, double _max)
 
 bool Engine::RectCollision(DynamicObject* _firstObject, BaseObject* _secondObject)
 {
-	//TODO: Maybe figure out how to do a fast-false ?
+	if (InAxisRange(_firstObject->x, _secondObject->x, _secondObject->x2) && InAxisRange(_firstObject->y, _secondObject->y, _secondObject->y2) ||
+		InAxisRange(_firstObject->x2, _secondObject->x, _secondObject->x2) && InAxisRange(_firstObject->y, _secondObject->y, _secondObject->y2) ||
+		InAxisRange(_firstObject->x, _secondObject->x, _secondObject->x2) && InAxisRange(_firstObject->y2, _secondObject->y, _secondObject->y2) ||
+		InAxisRange(_firstObject->x2, _secondObject->x, _secondObject->x2) && InAxisRange(_firstObject->y2, _secondObject->y, _secondObject->y2)
+	) return true;
+
+	/*------------------------------------------------------------------------------------------------------------------
+	//-- Doesn't work when you enter the object too far in next frame, and can't detect witch side you're impacting from
+	//-------------------------------------------------------------------------------------------------------------------
 	if (InAxisRange(_firstObject->x, _secondObject->x, _secondObject->x2) && InAxisRange(_firstObject->y - config->HITBOX_WIDTH, _secondObject->y, _secondObject->y2)
 		||
 		InAxisRange(_firstObject->x2, _secondObject->x, _secondObject->x2) && InAxisRange(_firstObject->y - config->HITBOX_WIDTH, _secondObject->y, _secondObject->y2))
@@ -68,6 +76,7 @@ bool Engine::RectCollision(DynamicObject* _firstObject, BaseObject* _secondObjec
 	_secondObject->collidingRight = false;
 	_secondObject->collidingLeft = false;
 	_secondObject->collidingBottom = false;
+	*/
 
 	return false;
 }
@@ -75,7 +84,7 @@ bool Engine::RectCollision(DynamicObject* _firstObject, BaseObject* _secondObjec
 bool Engine::DetectCollision(DynamicObject* _object)
 {
 	//Detect collision into blocks
-	for (vecIt = 1; vecIt != currentLevel->blocks.size(); vecIt++)
+	for (vecIt = 0; vecIt != currentLevel->blocks.size(); vecIt++)
 	{
 		block = currentLevel->blocks.at(vecIt);
 
@@ -92,8 +101,6 @@ bool Engine::DetectCollision(DynamicObject* _object)
 			{
 				_object->colliding = false;
 				block->colliding = false;
-
-				return false;
 			};
 		}
 	}
@@ -103,6 +110,8 @@ bool Engine::DetectCollision(DynamicObject* _object)
 
 void Engine::MoveObject(double &_timePassed, DynamicObject* _dynamicObject)
 {
+	double __x, __y;
+
 	// X - axis
 	if (_dynamicObject->accelVec[0]) //Accelarating
 	{
@@ -115,20 +124,13 @@ void Engine::MoveObject(double &_timePassed, DynamicObject* _dynamicObject)
 			else _dynamicObject->speedVec[0] = _dynamicObject->maxSpeed[0] * -1;
 		}			
 
+		__x = _dynamicObject->x;		
+
 		_dynamicObject->x += _dynamicObject->speedVec[0] * _timePassed;		
 
 		if (DetectCollision(_dynamicObject))
 		{
-			if (_dynamicObject->collidingLeft)
-			{
-				_dynamicObject->x += abs(_dynamicObject->speedVec[0]) * _timePassed;
-				_dynamicObject->x2 = _dynamicObject->x + _dynamicObject->width;
-			}
-			if (_dynamicObject->collidingRight)
-			{
-				_dynamicObject->x -= abs(_dynamicObject->speedVec[0]) * _timePassed;
-				_dynamicObject->x2 = _dynamicObject->x + _dynamicObject->width;
-			}
+			//_dynamicObject->x = __x;
 		}
 
 		_dynamicObject->x2 = _dynamicObject->x + _dynamicObject->width;
@@ -150,20 +152,13 @@ void Engine::MoveObject(double &_timePassed, DynamicObject* _dynamicObject)
 			else _dynamicObject->speedVec[1] = _dynamicObject->maxSpeed[1] * - 1;
 		}
 
+		__y = _dynamicObject->y;
+
 		_dynamicObject->y += _dynamicObject->speedVec[1] * _timePassed;
 
 		if (DetectCollision(_dynamicObject))
 		{
-			if (_dynamicObject->collidingTop)
-			{
-				_dynamicObject->y += abs(_dynamicObject->speedVec[1]) * _timePassed;
-				_dynamicObject->y2 = _dynamicObject->y + _dynamicObject->height;
-			}
-			if (_dynamicObject->collidingBottom)
-			{
-				_dynamicObject->y -= abs(_dynamicObject->speedVec[1]) * _timePassed;
-				_dynamicObject->y2 = _dynamicObject->y + _dynamicObject->height;
-			}
+			//_dynamicObject->y = __y;
 		}
 
 		_dynamicObject->y2 = _dynamicObject->y + _dynamicObject->height;
@@ -240,14 +235,14 @@ bool Engine::LoadMainScreen()
 	currentLevel->showFps = true;
 	currentLevel->devMode = true;
 
-	currentLevel->player->maxAccel[0] = 300.0f;	
-	currentLevel->player->maxAccel[1] = 300.0f;
+	currentLevel->player->maxAccel[0] = 50.0f;	
+	currentLevel->player->maxAccel[1] = 50.0f;
 
 	currentLevel->player->maxDeccel[0] = 80.0f;
 	currentLevel->player->maxDeccel[1] = 80.0f;
 
-	currentLevel->player->maxSpeed[0] = 100.0f;
-	currentLevel->player->maxSpeed[1] = 100.0f;
+	currentLevel->player->maxSpeed[0] = 80.0f;
+	currentLevel->player->maxSpeed[1] = 80.0f;
 
 	currentLevel->player->width = 50.0f;
 	currentLevel->player->height = 50.0f;
