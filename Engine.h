@@ -44,6 +44,6 @@ public:
 
 	bool DetectCollision(DynamicObject* _object);
 
-	void MoveObject(double &_timePassed, DynamicObject* _dynamicObject);
+	void MoveObject(double _timePassed, DynamicObject* _dynamicObject);
 };
 #endif
