@@ -9,8 +9,8 @@ Engine engine;
 bool LoadConfig(Config &_config)
 {
 	_config.GAME_BUILD[0] = 0;
-	_config.GAME_BUILD[1] = 2;
-	_config.GAME_BUILD[2] = 2;
+	_config.GAME_BUILD[1] = 3;
+	_config.GAME_BUILD[2] = 0;
 
 	snprintf(&_config.GAME_VERSION[0], sizeof(_config.GAME_VERSION), STRFMT_VERSION, _config.GAME_BUILD[0], _config.GAME_BUILD[1], _config.GAME_BUILD[2]);
 
