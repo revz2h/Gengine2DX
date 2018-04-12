@@ -73,6 +73,7 @@ LRESULT CALLBACK WinProc(HWND _hwnd, UINT _uMsg, WPARAM _wParam, LPARAM _lParam)
 					engine.currentLevel->player->accelVec[0] = 0;
 					break;
 			}
+
 			break;
 	}
 	return DefWindowProc(_hwnd, _uMsg, _wParam, _lParam);

@@ -140,13 +140,35 @@ void Engine::MoveObject(double _timePassed, DynamicObject* _dynamicObject)
 
 			_dynamicObject->speedVec[0] *= 0.5;
 			_dynamicObject->accelVec[0] *= 0.5;
-		}
-
-		
+		}		
 	}
 	else if (_dynamicObject->speedVec[0]) //Decelarating
 	{
-		_dynamicObject->speedVec[0] = 0;
+		if (_dynamicObject->speedVec[0] > 0)
+		{
+			_dynamicObject->speedVec[0] -= _dynamicObject->maxDeccel[0] * _timePassed;
+
+			if (_dynamicObject->speedVec[0] < 0) _dynamicObject->speedVec[0] = 0;
+		}
+		else
+		{
+			_dynamicObject->speedVec[0] += _dynamicObject->maxDeccel[0] * _timePassed;
+
+			if (_dynamicObject->speedVec[0] > 0) _dynamicObject->speedVec[0] = 0;
+		}
+
+		xTmp = _dynamicObject->x;
+
+		_dynamicObject->x += _dynamicObject->speedVec[0] * _timePassed;
+		_dynamicObject->x2 = _dynamicObject->x + _dynamicObject->width;
+
+		if (DetectCollision(_dynamicObject))
+		{
+			_dynamicObject->x = xTmp;
+			_dynamicObject->x2 = _dynamicObject->x + _dynamicObject->width;
+
+			_dynamicObject->speedVec[1] *= 0.5;
+		}
 	}
 
 	// Y - axis
@@ -177,9 +199,32 @@ void Engine::MoveObject(double _timePassed, DynamicObject* _dynamicObject)
 	}
 	else if (_dynamicObject->speedVec[1]) //Decelarating
 	{
-		_dynamicObject->speedVec[1] = 0;
-	}
+		if (_dynamicObject->speedVec[1] > 0)
+		{
+			_dynamicObject->speedVec[1] -= _dynamicObject->maxDeccel[1] * _timePassed;
 
+			if (_dynamicObject->speedVec[1] < 0) _dynamicObject->speedVec[1] = 0;
+		}
+		else
+		{
+			_dynamicObject->speedVec[1] += _dynamicObject->maxDeccel[1] * _timePassed;
+
+			if (_dynamicObject->speedVec[1] > 0) _dynamicObject->speedVec[1] = 0;
+		}
+
+		yTmp = _dynamicObject->y;
+
+		_dynamicObject->y += _dynamicObject->speedVec[1] * _timePassed;
+		_dynamicObject->y2 = _dynamicObject->y + _dynamicObject->height;
+
+		if (DetectCollision(_dynamicObject))
+		{
+			_dynamicObject->y = yTmp;
+			_dynamicObject->y2 = _dynamicObject->y + _dynamicObject->height;
+
+			_dynamicObject->speedVec[1] *= 0.5;
+		}
+	}
 };
 
 bool Engine::Init(HWND* _hwnd, Config* _config)
@@ -267,12 +312,12 @@ bool Engine::LoadMainScreen()
 	currentLevel->AddBlock(400, 20, 200, 100, true, true, false);
 
 	//Camera
-	currentLevel->camera = new Camera(100, 200, config->RES_X, config->RES_Y);
+	currentLevel->camera = new Camera(150, 400, config->RES_X, config->RES_Y);
 
 	currentLevel->camera->followPlayer = true;
 
 	this->render->showFps = true;
-	this->render->drawCollisions = false;
+	this->render->drawCollisions = true;
 
 	this->devMode = false;
 

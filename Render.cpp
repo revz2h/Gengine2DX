@@ -84,8 +84,8 @@ bool Render::Redraw(Level &_level, double _timePassed)
 		
 		renderTarget->DrawRectangle(
 			D2D1::RectF(
-				_level.player->scrX, 
-				_level.player->scrY, 
+				_level.player->scrX,
+				_level.player->scrY,
 				_level.player->scrX + _level.player->width,
 				_level.player->scrY + _level.player->height),
 			currentBrush
