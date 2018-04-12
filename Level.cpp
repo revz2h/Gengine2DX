@@ -97,12 +97,39 @@ DynamicObject::~DynamicObject()
 {
 }
 
+void DynamicObject::SetX(double _x)
+{
+	x = _x;
+	x2 = x + width;
+}
+
+void DynamicObject::SetY(double _y)
+{
+	y = _y;
+	y2 = y + height;
+}
+
 Player::Player()
 {
 }
 
 Player::~Player()
 {
+}
+
+Npc::Npc()
+{
+
+}
+
+Npc::~Npc()
+{
+
+}
+
+bool Npc::MoveTo(double _x, double _y)
+{
+	return false;
 }
 
 Level::Level()

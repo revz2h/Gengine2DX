@@ -130,13 +130,11 @@ void Engine::MoveObject(double _timePassed, DynamicObject* _dynamicObject)
 
 		xTmp = _dynamicObject->x;
 
-		_dynamicObject->x += _dynamicObject->speedVec[0] * _timePassed;	
-		_dynamicObject->x2 = _dynamicObject->x + _dynamicObject->width;
+		_dynamicObject->SetX(_dynamicObject->x + _dynamicObject->speedVec[0] * _timePassed);	
 
 		if (DetectCollision(_dynamicObject))
 		{
-			_dynamicObject->x = xTmp;
-			_dynamicObject->x2 = _dynamicObject->x + _dynamicObject->width;
+			_dynamicObject->SetX(xTmp);
 
 			_dynamicObject->speedVec[0] *= 0.5;
 			_dynamicObject->accelVec[0] *= 0.5;
@@ -159,13 +157,11 @@ void Engine::MoveObject(double _timePassed, DynamicObject* _dynamicObject)
 
 		xTmp = _dynamicObject->x;
 
-		_dynamicObject->x += _dynamicObject->speedVec[0] * _timePassed;
-		_dynamicObject->x2 = _dynamicObject->x + _dynamicObject->width;
+		_dynamicObject->SetX(_dynamicObject->x + _dynamicObject->speedVec[0] * _timePassed);
 
 		if (DetectCollision(_dynamicObject))
 		{
-			_dynamicObject->x = xTmp;
-			_dynamicObject->x2 = _dynamicObject->x + _dynamicObject->width;
+			_dynamicObject->SetX(xTmp);
 
 			_dynamicObject->speedVec[1] *= 0.5;
 		}
@@ -185,14 +181,12 @@ void Engine::MoveObject(double _timePassed, DynamicObject* _dynamicObject)
 
 		yTmp = _dynamicObject->y;
 
-		_dynamicObject->y += _dynamicObject->speedVec[1] * _timePassed;
-		_dynamicObject->y2 = _dynamicObject->y + _dynamicObject->height;
+		_dynamicObject->SetY(_dynamicObject->y + _dynamicObject->speedVec[1] * _timePassed);
 
 		if (DetectCollision(_dynamicObject))
-		{			
-			_dynamicObject->y = yTmp;
-			_dynamicObject->y2 = _dynamicObject->y + _dynamicObject->height;
-
+		{		
+			_dynamicObject->SetY(yTmp);
+			
 			_dynamicObject->speedVec[1] *= 0.5;
 			_dynamicObject->accelVec[1] *= 0.5;
 		}		
@@ -214,13 +208,11 @@ void Engine::MoveObject(double _timePassed, DynamicObject* _dynamicObject)
 
 		yTmp = _dynamicObject->y;
 
-		_dynamicObject->y += _dynamicObject->speedVec[1] * _timePassed;
-		_dynamicObject->y2 = _dynamicObject->y + _dynamicObject->height;
+		_dynamicObject->SetY(_dynamicObject->y + _dynamicObject->speedVec[1] * _timePassed);
 
 		if (DetectCollision(_dynamicObject))
 		{
-			_dynamicObject->y = yTmp;
-			_dynamicObject->y2 = _dynamicObject->y + _dynamicObject->height;
+			_dynamicObject->SetY(yTmp);
 
 			_dynamicObject->speedVec[1] *= 0.5;
 		}

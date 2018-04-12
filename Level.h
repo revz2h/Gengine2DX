@@ -42,6 +42,9 @@ public:
 
 	DynamicObject();
 	~DynamicObject();
+
+	void SetX(double _x);
+	void SetY(double _y);
 };
 
 class Player : public DynamicObject
@@ -50,6 +53,16 @@ class Player : public DynamicObject
 public:
 	Player();
 	~Player();
+};
+
+class Npc : public DynamicObject
+{
+
+public:
+	Npc();
+	~Npc();
+
+	bool MoveTo(double _x, double _y);
 };
 
 class Camera : public BaseObject
